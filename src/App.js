@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import './App.css';
-import Table from './Table.js'
+import Sheet from './Sheet.js'
+import SheetView from './SheetView.js'
 
 
 class App extends Component {
   render() {
     return (
       <div className="App">
-        <Table cols={12} rows={8}/>
+        <SheetView sheet={sheet1}/>
       </div>
     );
   }

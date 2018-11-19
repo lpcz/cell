@@ -1,25 +1,27 @@
 import React from 'react';
 import './index.css';
-import Cell from './Cell.js';
+import CellView from './CellView.js';
 
-class Table extends React.Component {
+class SheetView extends React.Component {
     constructor(props){
         super(props);
-        this.colNum = props.cols;
-        this.rowNum = props.rows;
+        this.sheet = props.sheet;
     }
 
     createTable(){
         let cells = [];
+        const colNum = this.sheet.colNum;
+        const rowNum = this.sheet.rowNum;
 
         cells.push(<div className="columnLabel">+</div>) //corner element, i will find some use for it (new sheet (+) ? )
-        for (let i = 0; i < this.colNum; i++) {
+        for (let i = 0; i < colNum; i++) {
             cells.push(<div className="columnLabel">{String.fromCharCode(65+i)}</div>);
         }
-        for (let i = 0; i < this.rowNum; i++) {
+        for (let i = 0; i < rowNum; i++) {
             cells.push(<div className="rowLabel">{i}</div>); //row label
-            for (let j = 0; j < this.colNum; j++) {
-                cells.push(<Cell id={i*this.colNum+j} />);
+            for (let j = 0; j < colNum; j++) {
+                const id = i*colNum+j;
+                cells.push(<CellView id={id} content={this.sheet.cellArray[id].content}/>);
             }
         }
         let tableStyle = {
@@ -33,4 +35,4 @@ class Table extends React.Component {
     render() { return this.createTable()}
 }
 
-export default Table;
+export default SheetView;
