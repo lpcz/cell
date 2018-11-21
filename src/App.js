@@ -5,10 +5,15 @@ import SheetView from './SheetView.js'
 
 
 class App extends Component {
+  constructor(props){
+      super(props);
+      this.sheet1 = new Sheet();
+  }
+
   render() {
     return (
       <div className="App">
-        <SheetView sheet={sheet1}/>
+        <SheetView sheet={this.sheet1}/>
       </div>
     );
   }

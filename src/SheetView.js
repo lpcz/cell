@@ -1,6 +1,7 @@
 import React from 'react';
 import './index.css';
 import CellView from './CellView.js';
+import Sheet from './Sheet';
 
 class SheetView extends React.Component {
     constructor(props){
@@ -20,12 +21,12 @@ class SheetView extends React.Component {
         for (let i = 0; i < rowNum; i++) {
             cells.push(<div className="rowLabel">{i}</div>); //row label
             for (let j = 0; j < colNum; j++) {
-                const id = i*colNum+j;
-                cells.push(<CellView id={id} content={this.sheet.cellArray[id].content}/>);
+                const cell = this.sheet.getCellByPos(j, i) || {content: ""};
+                cells.push(<CellView key={Sheet.posToKey(j, i)} content={cell.content}/>);
             }
         }
         let tableStyle = {
-            gridTemplateColumns: 'repeat(' + (this.colNum + 1) + ', 1fr)'
+            gridTemplateColumns: 'repeat(' + (colNum + 1) + ', 1fr)'
         };
         let tableDiv = (<div id="table" style={tableStyle}>{cells}</div>);
         return tableDiv;

@@ -1,4 +1,4 @@
-import Cell from 'Cell.js';
+import Cell from './Cell.js';
 
 export default class Sheet {
     constructor(colNum=12, rowNum=16, src){
@@ -6,39 +6,45 @@ export default class Sheet {
         this.colNum = colNum;
         this.rowNum = rowNum;
         this.size = colNum*rowNum;
-        this.cellArray = new Array(colNum*rowNum);
-
+        this.cellMap = new Map();
     }
 
-    // with Typescript we wont need this function
-    // id
-    // label
-    // row, col
-    getCell(arg1, arg2){
-        if (!arg2 &&
-            Number.isInteger(arg1) &&
-            arg1 >= 0 && arg1 < this.size
-        ){
-            return this.getCellById(arg1);
-        }
-        else if (Number.isInteger(arg1) && Number.isInteger(arg2)){
-            // TODO...
+    getCellByPos(col, row){
+        return this.cellMap.get(Sheet.posToKey(col, row));
+    }
 
+    //e.g "A0", "a3", "C7" -> cell obj
+    getCellByRef(refStr){
+        const pos = this.refStrToPos(refStr);
+        return this.getCellByPos(pos[0], pos[1]);
+    }
+
+
+    static refStrToPos(refStr){
+        let col, row;
+        let matchArr = refStr.match(/([a-zA-Z]+)([0-9]+)/);
+        if (matchArr){
+            col = Sheet.abcToNum(matchArr[1]);
+            row = Number(matchArr[2]);
+        }
+        return [col, row];
+    }
+
+    static posToKey(col, row){
+        if (col >= row){
+            return col*col + row;
+        }
+        else{
+            return row*(row+1) + (row-col);
         }
     }
 
-    getCellById(id){
-        if (Number.isInteger(id) &&
-            id >= 0 && id < this.size
-        ){
-            const cell = this.cellArray[id];
-            if (cell instanceof Cell) return cell;
-            else{
-                this.cellArray[id] = new Cell();
-                return this.cellArray[id];
-            }
+    static abcToNum(colStr){
+        colStr = colStr.toUpperCase();
+        let col = 0;
+        for (let i = 0; i < colStr.length; i++) {
+            col += (colStr[i].charCodeAt(0) - 65 + 1)*Math.pow(26, (colStr.length - i - 1))
         }
+        return col - 1; //we count from zero
     }
-
-    getCellByRef(){}
 }
