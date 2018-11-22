@@ -4,15 +4,13 @@ import './index.css';
 class CellView extends React.Component{
     constructor(props){
         super(props);
-        this.id = props.id;
-        this.content = props.content;
+        this.cell = props.cell;
+        this.content = props.content || props.cell.output || "";
     }
-    handleClick(){
 
-    }
 
     render(){
-        return (<div className="square" onClick={this.handleClick} contentEditable >{this.content}</div>);
+        return (<div className="square" onClick={() => this.props.handleFocus(this.cell)} contentEditable >{this.content}</div>);
     }
 }
 

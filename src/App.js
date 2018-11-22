@@ -1,19 +1,21 @@
 import React, { Component } from 'react';
 import './App.css';
-import Sheet from './Sheet.js'
-import SheetView from './SheetView.js'
+import Sheet from './Sheet.js';
+import SheetView from './SheetView.js';
+
 
 
 class App extends Component {
   constructor(props){
       super(props);
-      this.sheet1 = new Sheet();
+      const sheet1 = new Sheet();
+      this.state = {sheetInView : sheet1};
   }
 
   render() {
     return (
       <div className="App">
-        <SheetView sheet={this.sheet1}/>
+        <SheetView sheet={this.state.sheetInView}/>
       </div>
     );
   }

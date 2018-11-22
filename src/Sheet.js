@@ -7,10 +7,17 @@ export default class Sheet {
         this.rowNum = rowNum;
         this.size = colNum*rowNum;
         this.cellMap = new Map();
+        this.cellCounter = 1; //0 is for the default Cell
+    }
+
+    createNewCell(col, row, label){
+        const newCell = new Cell(this.cellCounter++, col, row, label);
+        this.cellMap.set(Sheet.posToKey(col, row), newCell);
+        return newCell;
     }
 
     getCellByPos(col, row){
-        return this.cellMap.get(Sheet.posToKey(col, row));
+        return this.cellMap.get(Sheet.posToKey(col, row));// || new Cell(this.cellCounter++, col, row, "getCellByPos created me");
     }
 
     //e.g "A0", "a3", "C7" -> cell obj
