@@ -12,10 +12,20 @@ class CodeInput extends React.Component {
 
         this.handleChangeCode = this.handleChangeCode.bind(this);
         this.handleChangeLabel = this.handleChangeLabel.bind(this);
+        this.handleKeyPress = this.handleKeyPress.bind(this);
     }
+
+    submit = (e) => {this.props.handleSubmit(e, this.state.codeText, this.state.label)};
 
     focus(){
         this.textAreaRef.current.focus();
+    }
+
+    handleKeyPress(event){
+        if (event.key === "Enter"){
+            event.preventDefault();
+            this.submit(event);
+        }
     }
 
     handleChangeCode(event) {
@@ -31,8 +41,9 @@ class CodeInput extends React.Component {
             <div className="codeInput">
             <span className="codeInputTitle">Input for cell #{this.props.cell.id} (pos: {this.props.cell.col}, {this.props.cell.row})</span>
                 label: <input className="codeInputLabel" value={this.state.label} onChange={this.handleChangeLabel}/>
-            code: <textarea ref={this.textAreaRef} id="codeInputTextArea" cols={this.props.cols} rows={this.props.rows} value={this.state.codeText} onChange={this.handleChangeCode}/>
-                <button onClick={(e) => this.props.handleSubmit(e, this.state.codeText, this.state.label)}>Input</button>
+            code: <textarea ref={this.textAreaRef} id="codeInputTextArea" cols={this.props.cols} rows={this.props.rows}
+                            value={this.state.codeText} onChange={this.handleChangeCode} onKeyPress={this.handleKeyPress}/>
+                <button onClick={this.submit}>Input</button>
             </div>
         );
     }

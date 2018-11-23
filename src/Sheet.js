@@ -8,23 +8,26 @@ export default class Sheet {
         this.size = colNum*rowNum;
         this.cellMap = new Map();
         this.cellCounter = 1; //0 is for the default Cell
-        this.zeroCell = new Cell(0, -1, -1, "");
+        this.zeroCell = new Cell(0, this, -1, -1, "");
     }
 
     createNewCell(col, row, label){
-        const newCell = new Cell(this.cellCounter++, col, row, label);
+        const newCell = new Cell(this.cellCounter++, this, col, row, label);
         this.cellMap.set(Sheet.posToKey(col, row), newCell);
         return newCell;
     }
 
     getCellByPos(col, row){
-        return this.cellMap.get(Sheet.posToKey(col, row));// || new Cell(this.cellCounter++, col, row, "getCellByPos created me");
+        return this.cellMap.get(Sheet.posToKey(col, row)) || this.zeroCell;
     }
 
     //e.g "A0", "a3", "C7" -> cell obj
     getCellByRef(refStr){
-        const pos = this.refStrToPos(refStr);
-        return this.getCellByPos(pos[0], pos[1]);
+        const pos = Sheet.refStrToPos(refStr);
+        console.log(pos);
+        const c = this.getCellByPos(pos[0], pos[1]);
+        console.log(c);
+        return c;
     }
 
 

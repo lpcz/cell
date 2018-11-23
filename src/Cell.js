@@ -3,8 +3,9 @@ export default class Cell {
     label;
     output = "";
     code = "";
-    constructor(id, col, row, label){
+    constructor(id, sheet, col, row, label){
         this.id = id;
+        this.sheet = sheet;
         this.label = label;
         this.col = col;
         this.row = row;
@@ -16,9 +17,31 @@ export default class Cell {
         this.run();
     }
 
+    /*
+    expr: (ref | function_call | string | binary_op | unary_op | EOF) [expr]
+    ref: /[A-Z]+[0-9]+/
+    function_call: /[A-Z]+/ ( expr [, expr] )
+    string: /".*"/
+    number: /[0-9]+/
+    binary_operator: '+' | '-' | '*' | '/' | '='
+    label_ref: /:[A-Za-z][\w]* /
+    id_ref: '#' number
+    binary_op: number binary_operator number
+    unary_op: unary_operator expr
+
+     */
+
     //RUN!!!!! - here we interpret the code
     run(){
-        this.output = this.code;
+        //this.output = this.code;
+        const cellRefs = this.code.match(/[A-Z]{1,3}[0-9]{1,5}/i);
+        if (cellRefs){
+            const refCell = this.sheet.getCellByRef(cellRefs[0]);
+            this.output = refCell.run();
+        }else{
+            this.output = this.code;
+        }
+        return this.output;
     }
 
 
