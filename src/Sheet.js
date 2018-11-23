@@ -8,6 +8,7 @@ export default class Sheet {
         this.size = colNum*rowNum;
         this.cellMap = new Map();
         this.cellCounter = 1; //0 is for the default Cell
+        this.zeroCell = new Cell(0, -1, -1, "");
     }
 
     createNewCell(col, row, label){

@@ -40,6 +40,14 @@ ol, ul {
   color: antiquewhite;
 }
 
+.codeInput > *{
+  margin-right: 25px;
+}
+
+.codeInput > textarea{
+  margin-bottom: -1em;
+}
+
 .kbd-navigation .square:focus {
   /*background: #74d10b;*/
 }

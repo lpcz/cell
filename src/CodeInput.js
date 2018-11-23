@@ -8,9 +8,14 @@ class CodeInput extends React.Component {
             codeText: props.cell.code,
             label: props.cell.label
         };
+        this.textAreaRef = React.createRef();
 
         this.handleChangeCode = this.handleChangeCode.bind(this);
         this.handleChangeLabel = this.handleChangeLabel.bind(this);
+    }
+
+    focus(){
+        this.textAreaRef.current.focus();
     }
 
     handleChangeCode(event) {
@@ -23,20 +28,20 @@ class CodeInput extends React.Component {
 
     render() {
         return (
-            <>
-            <h1 className="codeInputTitle">Input for cell #{this.props.cell.id} (pos: {this.props.cell.col}, {this.props.cell.row})</h1>
-                label: <input className="codeInputLabel" value={this.state.label}/><br/>
-            code: <textarea name="codeInputTextArea" cols={this.props.cols} rows={this.props.rows} value={this.state.codeText} onChange={this.handleChangeCode}/><br/>
-                <button onClick={(e) => this.props.handleSubmit(e, this.state.codeText)}>Input</button>
-            </>
+            <div className="codeInput">
+            <span className="codeInputTitle">Input for cell #{this.props.cell.id} (pos: {this.props.cell.col}, {this.props.cell.row})</span>
+                label: <input className="codeInputLabel" value={this.state.label} onChange={this.handleChangeLabel}/>
+            code: <textarea ref={this.textAreaRef} id="codeInputTextArea" cols={this.props.cols} rows={this.props.rows} value={this.state.codeText} onChange={this.handleChangeCode}/>
+                <button onClick={(e) => this.props.handleSubmit(e, this.state.codeText, this.state.label)}>Input</button>
+            </div>
         );
     }
 }
 
 CodeInput.defaultProps = {
     cell: new Cell(),
-    cols: 60,
-    rows: 10
+    cols: 50,
+    rows: 2
 };
 
 export default CodeInput;

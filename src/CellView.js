@@ -4,13 +4,18 @@ import './index.css';
 class CellView extends React.Component{
     constructor(props){
         super(props);
-        this.cell = props.cell;
-        this.content = props.content || props.cell.output || "";
+        this.handleClick = this.handleClick.bind(this);
     }
 
+    selectedStyle = {backgroundColor: "#ddd"};
+
+    handleClick(){
+        this.props.handleFocus(this.props.cell, this.props.col, this.props.row);
+    }
 
     render(){
-        return (<div className="square" onClick={() => this.props.handleFocus(this.cell)} contentEditable >{this.content}</div>);
+
+        return (<div className="square" style={this.props.selected ? this.selectedStyle : null} onClick={this.handleClick}>{this.props.cell.output}</div>);
     }
 }
 

@@ -16,9 +16,9 @@ export default class Cell {
         this.run();
     }
 
-    //RUN!!!!! - that is here we interpret the code
+    //RUN!!!!! - here we interpret the code
     run(){
-        this.output = this.code.replace(/"(.*)"/, '$&');
+        this.output = this.code;
     }
 
 

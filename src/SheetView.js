@@ -8,8 +8,13 @@ import Cell from './Cell.js';
 class SheetView extends React.Component {
     constructor(props){
         super(props);
-        this.sheet = props.sheet;
-        this.state = {cellInFocus: this.sheet.createNewCell(0, 0)};
+        this.state = {
+            cellInFocus: props.sheet.createNewCell(0, 0),
+            focusedCol: 0,
+            focusedRow: 0,
+            sheet: props.sheet
+        };
+        this.codeInputRef = React.createRef();
 
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleFocus = this.handleFocus.bind(this);
@@ -17,26 +22,31 @@ class SheetView extends React.Component {
 
     //called when the focused cell's code is changed by a CodeInput component
     handleSubmit(event, newCode, label) {
+        console.log(this);
         let c = this.state.cellInFocus;
         if (c.id === 0){
-            c = this.sheet.createNewCell(c.col, c.row, label);
+            c = this.state.sheet.createNewCell(this.state.focusedCol, this.state.focusedRow, label);
         }
-        alert('input: ' + newCode);
         c.setCode(newCode);
-        this.setState({cellInFocus: c});
-        // event.preventDefault();
+        c.label = label;
+        this.setState({sheet: this.state.sheet});
     }
 
-    handleFocus(newCellInFocus){
-        this.setState({cellInFocus: newCellInFocus})
+    handleFocus(newCellInFocus, col, row){
+        this.setState({
+            cellInFocus: newCellInFocus,
+            focusedCol: col,
+            focusedRow: row
+        })
+        this.codeInputRef.current.focus();
         //Todo: outline the corresponding col and row label 'cells', as a visual help
     }
 
     createTable(){
         let cells = [];
-        const colNum = this.sheet.colNum;
-        const rowNum = this.sheet.rowNum;
-        const zeroCell = new Cell(0);
+        const colNum = this.state.sheet.colNum;
+        const rowNum = this.state.sheet.rowNum;
+        const zeroCell = this.state.sheet.zeroCell;
 
         cells.push(<div className="columnLabel">+</div>) //corner element, (select all, standard functionality)
         for (let i = 0; i < colNum; i++) {
@@ -45,8 +55,9 @@ class SheetView extends React.Component {
         for (let i = 0; i < rowNum; i++) {
             cells.push(<div className="rowLabel">{i}</div>); //row label
             for (let j = 0; j < colNum; j++) {
-                const cell = this.sheet.getCellByPos(j, i) || zeroCell;
-                cells.push(<CellView key={Sheet.posToKey(j, i)} cell={cell} handleFocus={this.handleFocus}/>);
+                const cell = this.state.sheet.getCellByPos(j, i) || zeroCell;
+                const isSelected = (i === this.state.focusedRow && j === this.state.focusedCol);
+                cells.push(<CellView key={Sheet.posToKey(j, i)} cell={cell} col={j} row={i} selected={isSelected} handleFocus={this.handleFocus}/>);
             }
         }
         let tableStyle = {
@@ -54,8 +65,8 @@ class SheetView extends React.Component {
         };
         let result = (
             <>
+                <CodeInput ref={this.codeInputRef} key={this.state.cellInFocus.id} cell={this.state.cellInFocus} handleSubmit={this.handleSubmit}/>
                 <div id="table" style={tableStyle}>{cells}</div>
-                <CodeInput cell={this.state.cellInFocus} handleSubmit={this.handleSubmit}/>
             </>
         );
         return result;
