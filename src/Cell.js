@@ -33,13 +33,13 @@ export default class Cell {
 
     //RUN!!!!! - here we interpret the code
     run(){
-        //this.output = this.code;
+        this.output = this.code;
         const cellRefs = this.code.match(/[A-Z]{1,3}[0-9]{1,5}/i);
-        if (cellRefs){
+        if (cellRefs) {
             const refCell = this.sheet.getCellByRef(cellRefs[0]);
-            this.output = refCell.run();
-        }else{
-            this.output = this.code;
+            if (refCell !== this) { //avoid infinite loop
+                this.output = refCell.run();
+            }
         }
         return this.output;
     }
