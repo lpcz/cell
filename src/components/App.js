@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import './App.css';
-import Sheet from './Sheet.js';
+import '../css/App.css';
+import Sheet from '../model/Sheet.js';
 import SheetView from './SheetView.js';
 
 class App extends Component {

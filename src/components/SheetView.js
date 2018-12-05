@@ -1,7 +1,7 @@
 import React from 'react';
-import './index.css';
+import '../css/index.css';
 import CellView from './CellView.js';
-import Sheet from './Sheet';
+import Sheet from '../model/Sheet';
 import CodeInput from './CodeInput.js';
 
 class SheetView extends React.Component {

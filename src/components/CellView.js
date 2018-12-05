@@ -1,5 +1,5 @@
 import React from 'react';
-import './index.css';
+import '../css/index.css';
 
 let baseStyle = {overflow: "hidden"};
 let selectedStyle = {backgroundColor: "#ddd"};
@@ -9,8 +9,8 @@ class CellView extends React.Component{
         super(props);
         this.divRef = React.createRef();
         this.handleClick = this.handleClick.bind(this);
-        this.style1 = Object.assign({}, baseStyle);
     }
+
 
     componentDidMount() {
         // Create an observer instance linked to the callback function
@@ -33,13 +33,8 @@ class CellView extends React.Component{
     }
 
     render(){
-        console.log(this.style1);
-        let style = Object.create(null);
-        Object.assign(style, this.style1);
-        if (this.props.selected){
-            Object.assign(style, {backgroundColor: "#ddd"});
-        }
-        return (<div contentEditable className="square" ref={this.divRef} style={style} onClick={this.handleClick}>{this.props.cell.output}</div>);
+        let className = "square " + this.props.selected ? "squareSelected" : "";
+        return (<div contentEditable className={className} ref={this.divRef} onClick={this.handleClick}>{this.props.cell.output}</div>);
     }
 }
 

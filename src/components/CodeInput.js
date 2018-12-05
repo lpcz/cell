@@ -1,5 +1,5 @@
 import React from 'react';
-import Cell from './Cell.js';
+import Cell from '../model/Cell.js';
 
 class CodeInput extends React.Component {
     constructor(props){
