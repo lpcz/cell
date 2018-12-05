@@ -17,7 +17,14 @@ class CodeInput extends React.Component {
 
     submit = (e) => {this.props.handleSubmit(e, this.state.codeText, this.state.label)};
 
-    focus(){
+    componentDidUpdate(prevProps) {
+        console.log("codeinput updated!");
+        if (prevProps.cell !== this.props.cell){
+            this.textAreaRef.current.focus();
+        }
+    }
+
+    componentDidMount(){
         this.textAreaRef.current.focus();
     }
 

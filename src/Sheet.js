@@ -7,18 +7,17 @@ export default class Sheet {
         this.rowNum = rowNum;
         this.size = colNum*rowNum;
         this.cellMap = new Map();
-        this.cellCounter = 1; //0 is for the default Cell
         this.zeroCell = new Cell(0, this, -1, -1, "");
     }
 
     createNewCell(col, row, label){
-        const newCell = new Cell(this.cellCounter++, this, col, row, label);
-        this.cellMap.set(Sheet.posToKey(col, row), newCell);
+        const newCell = new Cell(this.posToCellId(col, row), this, col, row, label);
+        this.cellMap.set(newCell.id, newCell);
         return newCell;
     }
 
     getCellByPos(col, row){
-        return this.cellMap.get(Sheet.posToKey(col, row)) || this.zeroCell;
+        return this.cellMap.get(this.posToCellId(col, row)) || this.zeroCell;
     }
 
     //e.g "A0", "a3", "C7" -> cell obj
@@ -31,6 +30,10 @@ export default class Sheet {
     }
 
 
+    posToCellId(col, row) {
+        return row*this.colNum + col + 1; // +1 because zeroCell has id 0. Should zeroCell's id be -1?
+    }
+
     static refStrToPos(refStr){
         let col, row;
         let matchArr = refStr.match(/([a-zA-Z]+)([0-9]+)/);
@@ -42,6 +45,21 @@ export default class Sheet {
     }
 
     static posToKey(col, row){
+        if (col >= row){
+            return col*col + row;
+        }
+        else{
+            return row*(row+1) + (row-col);
+        }
+    }
+
+    /*that circular way of assigning IDs
+        1 2 5 10  i
+        4 3 6 11  i
+        9 8 7 12  V
+           14 13
+    */
+    static posToCircularId(col, row){
         if (col >= row){
             return col*col + row;
         }

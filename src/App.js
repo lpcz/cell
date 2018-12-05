@@ -3,8 +3,6 @@ import './App.css';
 import Sheet from './Sheet.js';
 import SheetView from './SheetView.js';
 
-
-
 class App extends Component {
   constructor(props){
       super(props);
@@ -20,5 +18,6 @@ class App extends Component {
     );
   }
 }
+
 
 export default App;

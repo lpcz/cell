@@ -3,16 +3,13 @@ import './index.css';
 import CellView from './CellView.js';
 import Sheet from './Sheet';
 import CodeInput from './CodeInput.js';
-import Cell from './Cell.js';
 
 class SheetView extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            cellInFocus: props.sheet.createNewCell(0, 0),
             focusedCol: 0,
             focusedRow: 0,
-            sheet: props.sheet
         };
         this.codeInputRef = React.createRef();
 
@@ -20,52 +17,61 @@ class SheetView extends React.Component {
         this.handleFocus = this.handleFocus.bind(this);
     }
 
-    //called when the focused cell's code is changed by a CodeInput component
+    focusedCell = () => this.props.sheet.getCellByPos(this.state.focusedCol, this.state.focusedRow);
+
+    //called when the focused cell's code is changed by the CodeInput component
     handleSubmit(event, newCode, label) {
-        console.log(this);
-        let c = this.state.cellInFocus;
+        let c = this.focusedCell();
         if (c.id === 0){
-            c = this.state.sheet.createNewCell(this.state.focusedCol, this.state.focusedRow, label);
+            c = this.props.sheet.createNewCell(this.state.focusedCol, this.state.focusedRow, label);
         }
         c.setCode(newCode);
         c.label = label;
-        this.setState({sheet: this.state.sheet});
+        this.setState((state, props) => {
+            if (state.focusedCol < props.sheet.colNum){
+                return {focusedCol: state.focusedCol + 1}
+            }
+            else{
+                return {focusedCol: 0, focusedRow: state.focusedRow + 1}
+            }
+        })
+        // this.forceUpdate();
     }
 
-    handleFocus(newCellInFocus, col, row){
+    handleFocus(col, row){
         this.setState({
-            cellInFocus: newCellInFocus,
             focusedCol: col,
             focusedRow: row
-        })
-        this.codeInputRef.current.focus();
+        });
         //Todo: outline the corresponding col and row label 'cells', as a visual help
     }
 
     createTable(){
         let cells = [];
-        const colNum = this.state.sheet.colNum;
-        const rowNum = this.state.sheet.rowNum;
-        const zeroCell = this.state.sheet.zeroCell;
+        const colNum = this.props.sheet.colNum;
+        const rowNum = this.props.sheet.rowNum;
+        const zeroCell = this.props.sheet.zeroCell;
 
-        cells.push(<div className="columnLabel">+</div>) //corner element, (select all, standard functionality)
+        cells.push(<div key="plusSign" className="columnLabel">+</div>) //corner element, (select all, standard functionality)
         for (let i = 0; i < colNum; i++) {
-            cells.push(<div className="columnLabel">{String.fromCharCode(65+i)}</div>);
+            const letter = String.fromCharCode(65+i);
+            cells.push(<div key={letter} className="columnLabel">{letter}</div>);
         }
         for (let i = 0; i < rowNum; i++) {
-            cells.push(<div className="rowLabel">{i}</div>); //row label
+            cells.push(<div key={i} className="rowLabel">{i}</div>); //row label
             for (let j = 0; j < colNum; j++) {
-                const cell = this.state.sheet.getCellByPos(j, i) || zeroCell;
+                const cell = this.props.sheet.getCellByPos(j, i) || zeroCell;
                 const isSelected = (i === this.state.focusedRow && j === this.state.focusedCol);
-                cells.push(<CellView key={Sheet.posToKey(j, i)} cell={cell} col={j} row={i} selected={isSelected} handleFocus={this.handleFocus}/>);
+                cells.push(<CellView key={"key" + Sheet.posToCircularId(j, i)} cell={cell} col={j} row={i} selected={isSelected} handleFocus={this.handleFocus}/>);
             }
         }
         let tableStyle = {
             gridTemplateColumns: 'repeat(' + (colNum + 1) + ', 1fr)'
         };
+        const cellInFocus = this.focusedCell();
         let result = (
             <>
-                <CodeInput ref={this.codeInputRef} key={this.state.cellInFocus.id} cell={this.state.cellInFocus} handleSubmit={this.handleSubmit}/>
+                <CodeInput ref={this.codeInputRef} key={cellInFocus.id} cell={cellInFocus} handleSubmit={this.handleSubmit}/>
                 <div id="table" style={tableStyle}>{cells}</div>
             </>
         );
