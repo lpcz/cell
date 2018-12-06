@@ -66,13 +66,14 @@ class SheetView extends React.Component {
             }
         }
         let tableStyle = {
-            gridTemplateColumns: 'repeat(' + (colNum + 1) + ', 1fr)'
+            gridTemplateColumns: '2em repeat(' + colNum + ', 1fr)',
+            gridTemplateRows: '2em repeat(' + rowNum + ', 1fr)'
         };
         const cellInFocus = this.focusedCell();
         let result = (
             <>
-                <CodeInput ref={this.codeInputRef} key={cellInFocus.id} cell={cellInFocus} handleSubmit={this.handleSubmit}/>
                 <div id="table" style={tableStyle}>{cells}</div>
+                <CodeInput ref={this.codeInputRef} key={cellInFocus.id} cell={cellInFocus} handleSubmit={this.handleSubmit} rows={5}/>
             </>
         );
         return result;

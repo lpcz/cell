@@ -43,12 +43,24 @@ class CodeInput extends React.Component {
         this.setState({label: event.target.value});
     }
 
+
     render() {
+        const st = {
+            display: "flex",
+            flexDirection: "column",
+            backgroundColor: "#ddd",
+            border: "3px solid",
+            width: "200px",
+            padding: "0px",
+            zIndex: "999"
+        };
         return (
-            <div className="codeInput">
+            <div className="codeInput" style={st}>
             <span className="codeInputTitle">Input for cell #{this.props.cell.id} (pos: {this.props.cell.col}, {this.props.cell.row})</span>
-                label: <input className="codeInputLabel" value={this.state.label} onChange={this.handleChangeLabel}/>
-            code: <textarea ref={this.textAreaRef} id="codeInputTextArea" cols={this.props.cols} rows={this.props.rows}
+                <div>label</div>
+                <input className="codeInputLabel" value={this.state.label} onChange={this.handleChangeLabel}/>
+                <div>code</div>
+                <textarea ref={this.textAreaRef} id="codeInputTextArea" cols={this.props.cols} rows={this.props.rows}
                             value={this.state.codeText} onChange={this.handleChangeCode} onKeyPress={this.handleKeyPress}/>
                 <button onClick={this.submit}>Input</button>
             </div>

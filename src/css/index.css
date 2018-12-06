@@ -17,6 +17,8 @@ ol, ul {
   row-gap: 2px;
   column-gap: 1px;
   width: 90%;
+  min-height: 90%;
+  max-height: 100vh;
   margin: 2em auto;
   padding: 5px;
   background-color: #132434;
@@ -25,8 +27,13 @@ ol, ul {
 .square {
   box-sizing: border-box;
   padding: 0;
+  overflow: hidden;
   text-align: center;
   background: #fff;
+}
+
+.squareSelected{
+  background: #ddd;
 }
 
 .square:hover{
@@ -41,11 +48,7 @@ ol, ul {
 }
 
 .codeInput > *{
-  margin-right: 25px;
-}
-
-.codeInput > textarea{
-  margin-bottom: -1em;
+  margin: 0;
 }
 
 .kbd-navigation .square:focus {
