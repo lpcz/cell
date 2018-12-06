@@ -33,6 +33,10 @@ ol, ul {
   background: #ddd;
 }
 
+.squareSelected{
+  background: #ddd;
+}
+
 .columnLabel, .rowLabel{
   display: flex;
   justify-content: center; /* align horizontal */

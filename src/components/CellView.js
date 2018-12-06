@@ -1,9 +1,6 @@
 import React from 'react';
 import '../css/index.css';
 
-let baseStyle = {overflow: "hidden"};
-let selectedStyle = {backgroundColor: "#ddd"};
-
 class CellView extends React.Component{
     constructor(props){
         super(props);
@@ -33,7 +30,7 @@ class CellView extends React.Component{
     }
 
     render(){
-        let className = "square " + this.props.selected ? "squareSelected" : "";
+        let className = "square " + (this.props.selected ? "squareSelected" : "");
         return (<div contentEditable className={className} ref={this.divRef} onClick={this.handleClick}>{this.props.cell.output}</div>);
     }
 }
