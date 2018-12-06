@@ -31,7 +31,7 @@ class CellView extends React.Component{
 
     render(){
         let className = "square " + (this.props.selected ? "squareSelected" : "");
-        return (<div contentEditable className={className} ref={this.divRef} onClick={this.handleClick}>{this.props.cell.output}</div>);
+        return (<div className={className} ref={this.divRef} onClick={this.handleClick}>{this.props.cell.output}</div>);
     }
 }
 

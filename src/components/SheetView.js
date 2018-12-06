@@ -66,7 +66,7 @@ class SheetView extends React.Component {
             }
         }
         let tableStyle = {
-            gridTemplateColumns: 'repeat(' + (colNum + 1) + ', 1fr)'
+            gridTemplateColumns: '2em repeat(' + (colNum) + ', 1fr)'
         };
         const cellInFocus = this.focusedCell();
         let result = (
