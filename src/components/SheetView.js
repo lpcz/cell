@@ -62,18 +62,16 @@ class SheetView extends React.Component {
             for (let j = 0; j < colNum; j++) {
                 const cell = this.props.sheet.getCellByPos(j, i) || zeroCell;
                 const isSelected = (i === this.state.focusedRow && j === this.state.focusedCol);
-                cells.push(<CellView key={"key" + Sheet.posToCircularId(j, i)} cell={cell} col={j} row={i} selected={isSelected} handleFocus={this.handleFocus}/>);
+                cells.push(<CellView key={"key" + Sheet.posToCircularId(j, i)} cell={cell} col={j} row={i} selected={isSelected} handleFocus={this.handleFocus} handleSubmit={this.handleSubmit}/>);
             }
         }
         let tableStyle = {
             gridTemplateColumns: '2em repeat(' + colNum + ', 1fr)',
             gridTemplateRows: '2em repeat(' + rowNum + ', 1fr)'
         };
-        const cellInFocus = this.focusedCell();
         let result = (
             <>
                 <div id="table" style={tableStyle}>{cells}</div>
-                <CodeInput ref={this.codeInputRef} key={cellInFocus.id} cell={cellInFocus} handleSubmit={this.handleSubmit} rows={5}/>
             </>
         );
         return result;

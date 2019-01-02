@@ -1,5 +1,4 @@
 import React from 'react';
-import { Manager, Reference, Popper } from 'react-popper';
 import '../css/index.css';
 import CodeInput from "./CodeInput";
 
@@ -8,14 +7,29 @@ class CellView extends React.Component{
     constructor(props){
         super(props);
         this.divRef = React.createRef();
+
+        this.state = {
+            popupCodeInput: false,
+            editingMode: false
+        };
+        this.codeText = props.cell.code;
+
         this.handleClick = this.handleClick.bind(this);
-        this.observerCallback = this.observerCallback.bind(this);
         this.textChangeCallback = this.textChangeCallback.bind(this);
+        this.handleKeyPress = this.handleKeyPress.bind(this);
+
+        this.observerCallback = this.observerCallback.bind(this);
         this.textObserver = new MutationObserver(this.textChangeCallback);
     }
 
     componentDidMount() {
-        this.divWidth = this.divRef.current.width;
+        if (!this.divRef.current) return;
+
+        const rect = this.divRef.current.getBoundingClientRect();
+
+        this.divLeft = rect.left + window.pageXOffset;
+        this.divTop = rect.top + window.pageYOffset;
+
         // Create an observer instance linked to the callback function
         this.observer = new MutationObserver(this.observerCallback);
 
@@ -25,37 +39,48 @@ class CellView extends React.Component{
         // Start observing the target node for configured mutations
         this.observer.observe(this.divRef.current, config);
 
+
     }
-
-
 
     componentWillUnmount() {
         // Later, you can stop observing
         this.observer.disconnect();
     }
 
+    //Todo: when we click on it, then it becomes contenteditable with the codetext
     handleClick(){
         this.props.handleFocus(this.props.col, this.props.row);
+        this.setState({editingMode: true});
     }
 
-    // static didOverflow(element) {
-    //     if (!element) return false;
-    //     return element.scrollHeight > element.clientHeight || element.scrollWidth > element.clientWidth;
-    // }
+    handleKeyPress(event){
+        if (event.key === "Enter" && this.state.editingMode){
+            event.preventDefault();
+            this.props.handleSubmit(event, this.codeText, this.props.cell.label);
+            this.setState({editingMode: false});
+        }
+    }
 
-    didSizeChange(element) {
+    didOverflow(element) {
         if (!element) return false;
-        console.log("element.clientHeight: " + element.clientHeight);
-        return element.clientHeight > 40;
+        return element.scrollHeight > element.clientHeight || element.scrollWidth > element.clientWidth;
     }
+
+    // didSizeChange(element) {
+    //     if (!element) return false;
+    //     console.log("element.clientHeight: " + element.clientHeight);
+    //     return element.clientHeight > 40;
+    // }
 
     textChangeCallback(mutationsList, observer){
 
         for (const mutation of mutationsList) {
             if (mutation.type === 'characterData'){
                 console.log('text changed: ' + mutation.target.data.length);
-                if (this.didSizeChange(mutation.target.parentElement)){
+                this.codeText = mutation.target.data;
+                if (this.didOverflow(mutation.target.parentElement)){
                     console.log("size changed, pop up the input box");
+                    this.setState({popupCodeInput: true})
                 }
             }
         }
@@ -77,27 +102,16 @@ class CellView extends React.Component{
 
     };
 
-
-
     render(){
         let className = "square " + (this.props.selected ? "squareSelected" : "");
-        return (
-            <Manager>
-                <Reference>
-                    {({ ref }) => (
-                        <div className={className} ref={ref} onClick={this.handleClick}>{this.props.cell.output}</div>
-                    )}
-                </Reference>
-                <Popper placement="bottom-end">
-                    {() => {
-                        //erre kiakadt
-                        // return this.props.selected &&
-                        //     <CodeInput/>
-                        
-                    }}
-                </Popper>
-            </Manager>
 
+        return (
+            <>
+                {this.state.popupCodeInput && <CodeInput left={this.divLeft} top={this.divTop} handleSubmit={this.props.handleSubmit} codeText={this.codeText}/>}
+                <div className={className} ref={this.divRef} onClick={this.handleClick} contentEditable={this.state.editingMode} onKeyPress={this.handleKeyPress}>
+                    {this.state.editingMode ? this.props.cell.code : this.props.cell.output}
+                </div>
+            </>
         );
     }
 }

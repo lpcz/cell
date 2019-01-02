@@ -1,11 +1,12 @@
 import React from 'react';
 import Cell from '../model/Cell.js';
 
+
 class CodeInput extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            codeText: props.cell.code,
+            codeText: props.codeText || props.cell.code,
             label: props.cell.label
         };
         this.textAreaRef = React.createRef();
@@ -15,9 +16,21 @@ class CodeInput extends React.Component {
         this.handleKeyPress = this.handleKeyPress.bind(this);
     }
 
+    style = {
+        position: "absolute",
+        display: "flex",
+        flexDirection: "column",
+        backgroundColor: "#ddd",
+        //border: "1px solid",
+        width: "200px",
+        padding: "0px",
+        boxShadow: "5px 10px 30px 1px"
+    };
+
     submit = (e) => {this.props.handleSubmit(e, this.state.codeText, this.state.label)};
 
-    componentDidUpdate(prevProps) {
+    //most mar cellankent jelenik meg, ezert ennek itt nincs jelentosege (asszem)
+    componentDidUpdate(prevProps){
         console.log("codeinput updated!");
         if (prevProps.cell !== this.props.cell){
             this.textAreaRef.current.focus();
@@ -45,17 +58,9 @@ class CodeInput extends React.Component {
 
 
     render() {
-        const st = {
-            display: "flex",
-            flexDirection: "column",
-            backgroundColor: "#ddd",
-            border: "3px solid",
-            width: "200px",
-            padding: "0px",
-            zIndex: "999"
-        };
+        Object.assign(this.style,{left: this.props.left, top: this.props.top});
         return (
-            <div className="codeInput" style={st}>
+            <div className="codeInput" style={this.style}>
             <span className="codeInputTitle">Input for cell #{this.props.cell.id} (pos: {this.props.cell.col}, {this.props.cell.row})</span>
                 <div>label</div>
                 <input className="codeInputLabel" value={this.state.label} onChange={this.handleChangeLabel}/>
