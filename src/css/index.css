@@ -5,22 +5,18 @@ code {
 
 body {
   font: 14px "Century Gothic", Futura, sans-serif;
-  margin: 20px;
+  margin: 0px;
 }
 
-ol, ul {
-  padding-left: 30px;
-}
 
 #table{
   display: grid;
   row-gap: 2px;
   column-gap: 1px;
-  width: 90%;
+  width: 100%;
   min-height: 90%;
   max-height: 100vh;
-  margin: 2em auto;
-  padding: 5px;
+  padding-bottom: 5px;
   background-color: #132434;
 }
 
@@ -47,6 +43,11 @@ ol, ul {
   justify-content: center; /* align horizontal */
   align-items: center; /* align vertical */
   color: antiquewhite;
+}
+
+.columnLabelSelected, .rowLabelSelected{
+  background-color: #b1c129;
+  color: black;
 }
 
 .codeInput > *{

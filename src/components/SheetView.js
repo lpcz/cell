@@ -2,7 +2,6 @@ import React from 'react';
 import '../css/index.css';
 import CellView from './CellView.js';
 import Sheet from '../model/Sheet';
-import CodeInput from './CodeInput.js';
 
 class SheetView extends React.Component {
     constructor(props){
@@ -11,7 +10,6 @@ class SheetView extends React.Component {
             focusedCol: 0,
             focusedRow: 0,
         };
-        this.codeInputRef = React.createRef();
 
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleFocus = this.handleFocus.bind(this);
@@ -28,14 +26,13 @@ class SheetView extends React.Component {
         c.setCode(newCode);
         c.label = label;
         this.setState((state, props) => {
-            if (state.focusedCol < props.sheet.colNum){
+            if (state.focusedCol < props.sheet.colNum-1){
                 return {focusedCol: state.focusedCol + 1}
             }
             else{
                 return {focusedCol: 0, focusedRow: state.focusedRow + 1}
             }
         })
-        // this.forceUpdate();
     }
 
     handleFocus(col, row){
@@ -55,10 +52,12 @@ class SheetView extends React.Component {
         cells.push(<div key="plusSign" className="columnLabel">+</div>) //corner element, (select all, standard functionality)
         for (let i = 0; i < colNum; i++) {
             const letter = String.fromCharCode(65+i);
-            cells.push(<div key={letter} className="columnLabel">{letter}</div>);
+            const classes = i === (this.state.focusedCol) ? "columnLabel columnLabelSelected" : "columnLabel";
+            cells.push(<div key={letter} className={classes}>{letter}</div>);
         }
         for (let i = 0; i < rowNum; i++) {
-            cells.push(<div key={i} className="rowLabel">{i}</div>); //row label
+            const classes = i === (this.state.focusedRow) ? "rowLabel rowLabelSelected" : "rowLabel";
+            cells.push(<div key={i} className={classes}>{i}</div>); //row label
             for (let j = 0; j < colNum; j++) {
                 const cell = this.props.sheet.getCellByPos(j, i) || zeroCell;
                 const isSelected = (i === this.state.focusedRow && j === this.state.focusedCol);

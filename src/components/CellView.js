@@ -10,13 +10,14 @@ class CellView extends React.Component{
 
         this.state = {
             popupCodeInput: false,
-            editingMode: false
+            editingMode: false,
+            codeText: props.cell.code
         };
         this.codeText = props.cell.code;
-
         this.handleClick = this.handleClick.bind(this);
         this.textChangeCallback = this.textChangeCallback.bind(this);
         this.handleKeyPress = this.handleKeyPress.bind(this);
+        this.handleCloseCodeInput = this.handleCloseCodeInput.bind(this);
 
         this.observerCallback = this.observerCallback.bind(this);
         this.textObserver = new MutationObserver(this.textChangeCallback);
@@ -57,8 +58,13 @@ class CellView extends React.Component{
         if (event.key === "Enter" && this.state.editingMode){
             event.preventDefault();
             this.props.handleSubmit(event, this.codeText, this.props.cell.label);
-            this.setState({editingMode: false});
+            this.setState({editingMode: false, codeText: this.codeText});
         }
+    }
+
+    handleCloseCodeInput(){
+        console.log("in handleCloseCodeInput");
+        this.setState({popupCodeInput: false})
     }
 
     didOverflow(element) {
@@ -80,7 +86,7 @@ class CellView extends React.Component{
                 this.codeText = mutation.target.data;
                 if (this.didOverflow(mutation.target.parentElement)){
                     console.log("size changed, pop up the input box");
-                    this.setState({popupCodeInput: true})
+                    if (!this.state.popupCodeInput) this.setState({popupCodeInput: true});
                 }
             }
         }
@@ -107,7 +113,7 @@ class CellView extends React.Component{
 
         return (
             <>
-                {this.state.popupCodeInput && <CodeInput left={this.divLeft} top={this.divTop} handleSubmit={this.props.handleSubmit} codeText={this.codeText}/>}
+                {this.state.popupCodeInput && <CodeInput cell={this.props.cell} left={this.divLeft} top={this.divTop} closeHandler={this.handleCloseCodeInput} handleSubmit={this.props.handleSubmit} codeText={this.codeText}/>}
                 <div className={className} ref={this.divRef} onClick={this.handleClick} contentEditable={this.state.editingMode} onKeyPress={this.handleKeyPress}>
                     {this.state.editingMode ? this.props.cell.code : this.props.cell.output}
                 </div>

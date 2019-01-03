@@ -11,6 +11,8 @@ class CodeInput extends React.Component {
         };
         this.textAreaRef = React.createRef();
 
+        Object.assign(this.style,{left: this.props.left, top: this.props.top});
+
         this.handleChangeCode = this.handleChangeCode.bind(this);
         this.handleChangeLabel = this.handleChangeLabel.bind(this);
         this.handleKeyPress = this.handleKeyPress.bind(this);
@@ -27,7 +29,10 @@ class CodeInput extends React.Component {
         boxShadow: "5px 10px 30px 1px"
     };
 
-    submit = (e) => {this.props.handleSubmit(e, this.state.codeText, this.state.label)};
+    submit = (e) => {
+        this.props.closeHandler();
+        this.props.handleSubmit(e, this.state.codeText, this.state.label)
+    }; //I use this twice, that's why it's separated into a func
 
     //most mar cellankent jelenik meg, ezert ennek itt nincs jelentosege (asszem)
     componentDidUpdate(prevProps){
@@ -58,16 +63,14 @@ class CodeInput extends React.Component {
 
 
     render() {
-        Object.assign(this.style,{left: this.props.left, top: this.props.top});
         return (
             <div className="codeInput" style={this.style}>
-            <span className="codeInputTitle">Input for cell #{this.props.cell.id} (pos: {this.props.cell.col}, {this.props.cell.row})</span>
-                <div>label</div>
-                <input className="codeInputLabel" value={this.state.label} onChange={this.handleChangeLabel}/>
-                <div>code</div>
-                <textarea ref={this.textAreaRef} id="codeInputTextArea" cols={this.props.cols} rows={this.props.rows}
+            <textarea ref={this.textAreaRef} id="codeInputTextArea" cols={this.props.cols} rows={this.props.rows}
                             value={this.state.codeText} onChange={this.handleChangeCode} onKeyPress={this.handleKeyPress}/>
-                <button onClick={this.submit}>Input</button>
+            <div>label</div>
+            <input className="codeInputLabel" value={this.state.label} onChange={this.handleChangeLabel}/>
+            <button onClick={this.submit}>Input</button>
+            <span className="codeInputTitle">Input for cell #{this.props.cell.id} (pos: {this.props.cell.col}, {this.props.cell.row})</span>
             </div>
         );
     }
