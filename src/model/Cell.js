@@ -34,6 +34,8 @@ export default class Cell {
     //RUN!!!!! - here we interpret the code
     run(){
         this.output = this.code;
+        const stringMatch = this.code.match(/".*"/i);
+
         const cellRefs = this.code.match(/[A-Z]{1,3}[0-9]{1,5}/i);
         if (cellRefs) {
             const refCell = this.sheet.getCellByRef(cellRefs[0]);

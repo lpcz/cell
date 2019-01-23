@@ -30,9 +30,9 @@ class CodeInput extends React.Component {
     };
 
     submit = (e) => {
+        this.props.handleSubmit(e, this.state.codeText, this.state.label);
         this.props.closeHandler();
-        this.props.handleSubmit(e, this.state.codeText, this.state.label)
-    }; //I use this twice, that's why it's separated into a func
+    }; //I use this in two places, that's why it's separated into a func
 
     //most mar cellankent jelenik meg, ezert ennek itt nincs jelentosege (asszem)
     componentDidUpdate(prevProps){
@@ -47,9 +47,14 @@ class CodeInput extends React.Component {
     }
 
     handleKeyPress(event){
+        event.stopPropagation();
         if (event.key === "Enter"){
             event.preventDefault();
             this.submit(event);
+        }
+        else if(event.key === "Escape"){
+            console.log("ESC pressed");
+            this.props.closeHandler();
         }
     }
 
@@ -64,9 +69,9 @@ class CodeInput extends React.Component {
 
     render() {
         return (
-            <div className="codeInput" style={this.style}>
+            <div className="codeInput" style={this.style} onKeyDown={this.handleKeyPress}>
             <textarea ref={this.textAreaRef} id="codeInputTextArea" cols={this.props.cols} rows={this.props.rows}
-                            value={this.state.codeText} onChange={this.handleChangeCode} onKeyPress={this.handleKeyPress}/>
+                            value={this.state.codeText} onChange={this.handleChangeCode}/>
             <div>label</div>
             <input className="codeInputLabel" value={this.state.label} onChange={this.handleChangeLabel}/>
             <button onClick={this.submit}>Input</button>

@@ -23,9 +23,7 @@ export default class Sheet {
     //e.g "A0", "a3", "C7" -> cell obj
     getCellByRef(refStr){
         const pos = Sheet.refStrToPos(refStr);
-        console.log(pos);
         const c = this.getCellByPos(pos[0], pos[1]);
-        console.log(c);
         return c;
     }
 
@@ -42,6 +40,15 @@ export default class Sheet {
             row = Number(matchArr[2]);
         }
         return [col, row];
+    }
+
+    static abcToNum(colStr){
+        colStr = colStr.toUpperCase();
+        let col = 0;
+        for (let i = 0; i < colStr.length; i++) {
+            col += (colStr[i].charCodeAt(0) - 65 + 1)*Math.pow(26, (colStr.length - i - 1))
+        }
+        return col - 1; //we count from zero
     }
 
     static posToKey(col, row){
@@ -66,14 +73,5 @@ export default class Sheet {
         else{
             return row*(row+1) + (row-col);
         }
-    }
-
-    static abcToNum(colStr){
-        colStr = colStr.toUpperCase();
-        let col = 0;
-        for (let i = 0; i < colStr.length; i++) {
-            col += (colStr[i].charCodeAt(0) - 65 + 1)*Math.pow(26, (colStr.length - i - 1))
-        }
-        return col - 1; //we count from zero
     }
 }

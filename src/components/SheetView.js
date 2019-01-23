@@ -10,9 +10,15 @@ class SheetView extends React.Component {
             focusedCol: 0,
             focusedRow: 0,
         };
-
+        
+        this.thisRef = React.createRef();
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleFocus = this.handleFocus.bind(this);
+        this.changeFocus = this.changeFocus.bind(this);
+        this.handleKeyPress = this.handleKeyPress.bind(this);
+    }
+
+    componentDidMount() {
+        this.thisRef.current.focus();
     }
 
     focusedCell = () => this.props.sheet.getCellByPos(this.state.focusedCol, this.state.focusedRow);
@@ -35,13 +41,71 @@ class SheetView extends React.Component {
         })
     }
 
-    handleFocus(col, row){
+    handleKeyPress(event){
+        if (event.key === "ArrowRight"){
+            this.focusRight();
+        }
+        else if(event.key === "ArrowLeft"){
+            this.focusLeft();
+        }
+        else if(event.key === "ArrowDown"){
+            this.focusDown();
+        }
+        else if(event.key === "ArrowUp"){
+            this.focusUp();
+        }
+    }
+
+    focusRight(){
+        this.setState((state, props) => {
+            if (state.focusedCol < props.sheet.colNum - 1){
+                return {focusedCol: state.focusedCol + 1}
+            }
+            else if(state.focusedRow < props.sheet.rowNum - 1){
+                return {focusedCol: 0, focusedRow: state.focusedRow + 1}
+            }
+            else return null;
+        })
+    }
+
+    focusLeft(){
+        this.setState((state, props) => {
+            if (state.focusedCol > 0){
+                return {focusedCol: state.focusedCol - 1}
+            }
+            else{
+                return {focusedCol: props.sheet.colNum, focusedRow: state.focusedRow - 1}
+            }
+        })
+    }
+
+    focusDown(){
+        this.setState((state, props) => {
+            if (state.focusedRow < props.sheet.rowNum){
+                return {focusedRow: state.focusedRow + 1}
+            }
+        })
+    }
+
+    focusUp(){
+        this.setState((state, props) => {
+            if (state.focusedRow > 0){
+                return {focusedRow: state.focusedRow - 1}
+            }
+            else{
+                return {focusedCol: props.sheet.colNum, focusedRow: state.focusedRow - 1}
+            }
+        })
+    }
+
+    changeFocus(col, row){
         this.setState({
             focusedCol: col,
             focusedRow: row
         });
-        //Todo: outline the corresponding col and row label 'cells', as a visual help
     }
+
+
 
     createTable(){
         let cells = [];
@@ -61,7 +125,7 @@ class SheetView extends React.Component {
             for (let j = 0; j < colNum; j++) {
                 const cell = this.props.sheet.getCellByPos(j, i) || zeroCell;
                 const isSelected = (i === this.state.focusedRow && j === this.state.focusedCol);
-                cells.push(<CellView key={"key" + Sheet.posToCircularId(j, i)} cell={cell} col={j} row={i} selected={isSelected} handleFocus={this.handleFocus} handleSubmit={this.handleSubmit}/>);
+                cells.push(<CellView key={"key" + Sheet.posToCircularId(j, i)} cell={cell} col={j} row={i} selected={isSelected} changeFocus={this.changeFocus} handleSubmit={this.handleSubmit}/>);
             }
         }
         let tableStyle = {
@@ -70,7 +134,7 @@ class SheetView extends React.Component {
         };
         let result = (
             <>
-                <div id="table" style={tableStyle}>{cells}</div>
+                <div id="table" style={tableStyle} onKeyDown={this.handleKeyPress} tabIndex="0" ref={this.thisRef}>{cells}</div>
             </>
         );
         return result;
