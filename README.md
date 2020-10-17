@@ -1,4 +1,4 @@
-Very rudimentary project, I published it for demonstration of my skills (or lack thereof).
+Very rudimentary project
 
 ### plans, dreams
 
